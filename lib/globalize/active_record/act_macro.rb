@@ -71,13 +71,6 @@ module Globalize
         after_create :save_translations!
         after_update :save_translations!
 
-        if options[:versioning]
-          ::ActiveRecord::Base.extend(Globalize::Versioning::PaperTrail)
-
-          translation_class.has_paper_trail
-          delegate :version, :versions, :to => :translation
-        end
-
         translation_class.instance_eval %{ attr_accessible :locale }
       end
     end
