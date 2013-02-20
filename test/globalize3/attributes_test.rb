@@ -183,8 +183,8 @@ class AttributesTest < Test::Unit::TestCase
   test 'modifying a translated attribute does not remove secondary unsaved translations' do
     post = with_locale(:en) do
       post = Post.new(:translations_attributes => {
-        "0" => { :locale => 'en', :title => 'title' },
-        "1" => { :locale => 'it', :title => 'titolo' }
+        "0" => { :locale => 'en', :value => 'title', :attribute_name => 'title' },
+        "1" => { :locale => 'it', :value => 'titolo', :attribute_name => 'title' }
       })
       post.title = 'changed my mind'
       post
@@ -248,12 +248,12 @@ class AttributesTest < Test::Unit::TestCase
   end
 
   test 'updates original columns with content in the same locale' do
-    word = Word.create :locale => 'nl', :term => 'ontvrienden', :definition => 'Iemand als vriend verwijderen op een sociaal netwerk'
+    word = Word.create :locale => 'vi', :term => 'ontvrienden', :definition => 'Iemand als vriend verwijderen op een sociaal netwerk'
 
     I18n.locale = :en
     word.update_attributes :term => 'unfriend', :definition => 'To remove someone as a friend on a social network'
 
-    I18n.locale = :nl
+    I18n.locale = :vi
     word.update_attributes :term => 'ontvriend'
 
     legacy_word = LegacyWord.find(word.id)

@@ -37,13 +37,6 @@ module Globalize
         end
       end
 
-      def class_name
-        @class_name ||= begin
-          class_name = table_name[table_name_prefix.length..-(table_name_suffix.length + 1)].downcase.camelize
-          pluralize_table_names ? class_name.singularize : class_name
-        end
-      end
-
       def translates?
         included_modules.include?(InstanceMethods)
       end
@@ -51,7 +44,6 @@ module Globalize
       protected
       def setup_translates!(options)
         options[:table_name] ||= "#{table_name.singularize}_translations"
-        options[:foreign_key] ||= class_name.foreign_key
 
         class_attribute :translated_attribute_names, :translation_options, :fallbacks_for_empty_translations
         self.translated_attribute_names = []
@@ -59,14 +51,14 @@ module Globalize
         self.fallbacks_for_empty_translations = options[:fallbacks_for_empty_translations]
 
         include InstanceMethods
-        extend  ClassMethods, Migration
+        extend  ClassMethods
 
         translation_class.table_name = options[:table_name] if translation_class.table_name.blank?
 
         has_many :translations, :class_name  => translation_class.name,
-                                :foreign_key => options[:foreign_key],
                                 :dependent   => :destroy,
-                                :extend      => HasManyExtensions
+                                :extend      => HasManyExtensions,
+                                :as => :translatable
 
         after_create :save_translations!
         after_update :save_translations!

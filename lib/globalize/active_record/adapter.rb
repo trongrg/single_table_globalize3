@@ -41,18 +41,20 @@ module Globalize
       end
 
       def save_translations!
-        existing_translations_by_locale = {}
+        existing_translations = {}
         record.translations.each do |t|
-          existing_translations_by_locale[t.locale.to_s] = t
+          existing_translations[t.locale.to_s] = {t.attribute_name.to_s => t}.merge(existing_translations[t.locale.to_s]||{})
         end
-        
+
         stash.each do |locale, attrs|
           if attrs.any?
             locale_str = locale.to_s
-            translation = existing_translations_by_locale[locale_str] ||
-              record.translations.find_or_initialize_by_locale(locale_str)
-            attrs.each { |name, value| translation[name] = value }
-            translation.save!
+            attrs.each do |name, value|
+              translation = existing_translations[locale_str][name] if existing_translations[locale_str]
+              translation ||= record.translations.build(:locale => locale_str, :attribute_name => name)
+              translation.value = value
+              translation.save!
+            end
           end
         end
 
@@ -84,8 +86,8 @@ module Globalize
       end
 
       def fetch_attribute(locale, name)
-        translation = record.translation_for(locale, false)
-        return translation && translation.send(name)
+        translation = record.translation_for(locale, name, false)
+        return translation && translation.value
       end
 
       def set_metadata(object, metadata)

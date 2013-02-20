@@ -3,26 +3,18 @@ module Globalize
     module ClassMethods
       delegate :translated_locales, :set_translations_table_name, :to => :translation_class
 
-      def with_locales(*locales)
-        scoped.merge(translation_class.with_locales(*locales))
-      end
-
-      def with_translations(*locales)
-        locales = translated_locales if locales.empty?
-        includes(:translations).with_locales(locales).with_required_attributes
-      end
-
-      def with_required_attributes
-        required_translated_attributes.inject(scoped) do |scope, name|
-          scope.where("#{translated_column_name(name)} IS NOT NULL")
-        end
+      def with_translations(*locales, index)
+        joins("LEFT OUTER JOIN #{translation_class.table_name} #{translations_table_name(index)} ON #{translations_table_name(index)}.translatable_id = #{self.table_name}.id").
+        select("#{table_name}.*")
       end
 
       def with_translated_attribute(name, value, locales = nil)
         locales ||= Globalize.fallbacks
-        with_translations.where(
-          translated_column_name(name)    => value,
-          translated_column_name(:locale) => Array(locales).map(&:to_s)
+        self.join_index = self.join_index + 1
+        with_translations(locales, self.join_index).where(
+          translated_column_name('attribute_name', self.join_index) => name.to_s,
+          translated_column_name(:locale, self.join_index) => Array(locales).map(&:to_s),
+          translated_column_name('value', self.join_index) => Array(value).map(&:to_s)
         )
       end
 
@@ -39,23 +31,15 @@ module Globalize
       end
 
       def translation_class
-        @translation_class ||= begin
-          klass = self.const_get(:Translation) rescue nil
-          if klass.nil? || klass.class_name != (self.class_name + "Translation")
-            klass = self.const_set(:Translation, Class.new(Globalize::ActiveRecord::Translation))
-          end
-
-          klass.belongs_to name.underscore.gsub('/', '_').to_sym, :class_name => self.name
-          klass
-        end
+        Globalize::ActiveRecord::Translation
       end
 
-      def translations_table_name
-        translation_class.table_name
+      def translations_table_name(index = nil)
+        "#{translation_class.table_name}#{index}"
       end
 
-      def translated_column_name(name)
-        "#{translation_class.table_name}.#{name}"
+      def translated_column_name(name, index = nil)
+        "#{translations_table_name(index)}.#{name}"
       end
 
       if RUBY_VERSION < '1.9'
@@ -153,7 +137,7 @@ module Globalize
       def translations_accessor(name)
         define_method(:"#{name}_translations") do
           result = translations.each_with_object(HashWithIndifferentAccess.new) do |translation, result|
-            result[translation.locale] = translation.send(name)
+            result[translation.locale] = translation.value
           end
           globalize.stash.keys.each_with_object(result) do |locale, result|
             result[locale] = globalize.fetch_stash(locale, name) if globalize.stash_contains?(locale, name)
@@ -166,6 +150,13 @@ module Globalize
         end
       end
 
+      def join_index
+        @join_index ||= 0
+      end
+
+      def join_index=(value)
+        @join_index = value
+      end
     end
 
   end

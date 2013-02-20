@@ -44,7 +44,7 @@ module Globalize
             options = {:locale => options}
           end
           options = {:locale => Globalize.locale}.merge(options)
-          
+
           # Dirty tracking, paraphrased from
           # ActiveRecord::AttributeMethods::Dirty#write_attribute.
           name_str = name.to_s
@@ -58,7 +58,7 @@ module Globalize
             old = old.clone if old.duplicable?
             changed_attributes[name_str] = old if value != old
           end
-          
+
           globalize.write(options[:locale], name, value)
         else
           super(name, value)
@@ -94,7 +94,7 @@ module Globalize
 
       def translated_attributes
         translated_attribute_names.inject({}) do |attributes, name|
-          attributes.merge(name.to_s => translation.send(name))
+          attributes.merge(name.to_s => translation[name.to_s].try(:value))
         end
       end
 
@@ -110,13 +110,12 @@ module Globalize
 
       def set_translations(options)
         options.keys.each do |locale|
-          translation = translation_for(locale) ||
-                        translations.build(:locale => locale.to_s)
-
           options[locale].each do |key, value|
-            translation.send :"#{key}=", value
+            raise NoMethodError.new("unknown attribute: #{key}") unless attribute_names.flatten.include?(key.to_s)
+            translation = translation_for(locale, key.to_s)
+            translation.value = value
+            translation.save
           end
-          translation.save
         end
         globalize.reset
       end
@@ -145,15 +144,25 @@ module Globalize
         translation_for(::Globalize.locale)
       end
 
-      def translation_for(locale, build_if_missing = true)
-        unless translation_caches[locale]
+      def translation_for(locale, name = nil, build_if_missing = true)
+        translation_caches[locale] ||= {}
+        if name.present? && translation_caches[locale][name].blank?
+          name = name.to_s
+          _translation = translations.detect{|t| t.locale.to_s == locale.to_s && t.attribute_name == name}
+          _translation ||= translations.attribute(name).with_locale(locale).first unless translations.loaded?
+          _translation ||= translations.build(:locale => locale, :attribute_name => name) if build_if_missing
+          translation_caches[locale][name] = _translation if _translation.present?
+        elsif name.blank?
           # Fetch translations from database as those in the translation collection may be incomplete
-          _translation = translations.detect{|t| t.locale.to_s == locale.to_s}
-          _translation ||= translations.with_locale(locale).first unless translations.loaded?
-          _translation ||= translations.build(:locale => locale) if build_if_missing
-          translation_caches[locale] = _translation if _translation
+          _translations = translations.select{|t| t.locale.to_s == locale.to_s }
+          _translations ||= translations.with_locale(locale) unless translations.loaded?
+          _translations.each do |t|
+            translation_caches[locale][t.attribute_name] = t
+          end
+          translation_caches[locale]
+        else
+          translation_caches[locale][name]
         end
-        translation_caches[locale]
       end
 
       def translation_caches
