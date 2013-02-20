@@ -36,27 +36,28 @@ module Globalize
         end
       end
 
+      # Deprecate old use of locale
+      def deprecated_options(options)
+        unless options.is_a?(Hash)
+          warn "[DEPRECATION] passing 'locale' as #{options.inspect} is deprecated. Please use {:locale => #{options.inspect}} instead."
+          {:locale => options}
+        else
+          options
+        end
+      end
+
       def write_attribute(name, value, options = {})
         if translated?(name)
-          # Deprecate old use of locale
-          unless options.is_a?(Hash)
-            warn "[DEPRECATION] passing 'locale' as #{options.inspect} is deprecated. Please use {:locale => #{options.inspect}} instead."
-            options = {:locale => options}
-          end
-          options = {:locale => Globalize.locale}.merge(options)
+          options = {:locale => Globalize.locale}.merge(deprecated_options(options))
 
           # Dirty tracking, paraphrased from
           # ActiveRecord::AttributeMethods::Dirty#write_attribute.
           name_str = name.to_s
-          if attribute_changed?(name_str)
-            # If there's already a change, delete it if this undoes the change.
-            old = changed_attributes[name_str]
-            changed_attributes.delete(name_str) if value == old
-          else
-            # If there's not a change yet, record it.
-            old = globalize.fetch(options[:locale], name)
-            old = old.clone if old.duplicable?
-            changed_attributes[name_str] = old if value != old
+          # If there's already a change, delete it if this undoes the change.
+          if attribute_changed?(name_str) && value == changed_attributes[name_str]
+            changed_attributes.delete(name_str)
+          elsif !attribute_changed?(name_str) && value != (old = globalize.fetch(options[:locale], name))
+            changed_attributes[name_str] = old
           end
 
           globalize.write(options[:locale], name, value)
@@ -66,19 +67,9 @@ module Globalize
       end
 
       def read_attribute(name, options = {})
-        # Deprecate old use of locale
-        unless options.is_a?(Hash)
-          warn "[DEPRECATION] passing 'locale' as #{options.inspect} is deprecated. Please use {:locale => #{options.inspect}} instead."
-          options = {:locale => options}
-        end
-
-        options = {:translated => true, :locale => nil}.merge(options)
-        if self.class.translated?(name) and options[:translated]
-          if (value = globalize.fetch(options[:locale] || Globalize.locale, name))
-            value
-          else
-            super(name)
-          end
+        options = {:translated => true, :locale => nil}.merge(deprecated_options(options))
+        if (self.class.translated?(name) && options[:translated]) && (value = globalize.fetch(options[:locale] || Globalize.locale, name))
+          value
         else
           super(name)
         end
@@ -141,28 +132,24 @@ module Globalize
       end
 
       def translation
-        translation_for(::Globalize.locale)
+        translations_for_locale(::Globalize.locale)
       end
 
-      def translation_for(locale, name = nil, build_if_missing = true)
+      def translation_for(locale, name, build_if_missing = true)
         translation_caches[locale] ||= {}
-        if name.present? && translation_caches[locale][name].blank?
-          name = name.to_s
-          _translation = translations.detect{|t| t.locale.to_s == locale.to_s && t.attribute_name == name}
-          _translation ||= translations.attribute(name).with_locale(locale).first unless translations.loaded?
-          _translation ||= translations.build(:locale => locale, :attribute_name => name) if build_if_missing
-          translation_caches[locale][name] = _translation if _translation.present?
-        elsif name.blank?
-          # Fetch translations from database as those in the translation collection may be incomplete
-          _translations = translations.select{|t| t.locale.to_s == locale.to_s }
-          _translations ||= translations.with_locale(locale) unless translations.loaded?
-          _translations.each do |t|
-            translation_caches[locale][t.attribute_name] = t
-          end
-          translation_caches[locale]
-        else
-          translation_caches[locale][name]
-        end
+        translation_caches[locale][name] ||= (translations.detect{|t| t.locale == locale && t.attribute_name == name.to_s}) ||
+          (translations.attribute(name).with_locale(locale).first) ||
+          (translations.build(:locale => locale, :attribute_name => name) if build_if_missing)
+      end
+
+      def translations_for_locale(locale)
+        translation_caches[locale] = if translations.loaded?
+                                       translations.select{|t| t.locale.to_s == locale.to_s }
+                                     else
+                                       translations.with_locale(locale)
+                                     end.inject({}) do |hash, t|
+                                       hash.update(t.attribute_name => t)
+                                     end
       end
 
       def translation_caches
@@ -173,11 +160,7 @@ module Globalize
         Globalize.fallbacks(locale)
       end
 
-      def rollback
-        translation_caches[::Globalize.locale] = translation.previous_version
-      end
-
-    private
+      private
 
       def update(*)
         I18n.with_locale(read_attribute(:locale) || I18n.default_locale) do
@@ -191,7 +174,7 @@ module Globalize
         end
       end
 
-    protected
+      protected
 
       def each_locale_and_translated_attribute
         used_locales.each do |locale|
@@ -202,9 +185,7 @@ module Globalize
       end
 
       def used_locales
-        locales = globalize.stash.keys.concat(globalize.stash.keys).concat(translations.translated_locales)
-        locales.uniq!
-        locales
+        globalize.stash.keys.concat(globalize.stash.keys).concat(translations.translated_locales).uniq
       end
 
       def save_translations!
@@ -216,7 +197,7 @@ module Globalize
         attributes.symbolize_keys! if attributes.respond_to?(:symbolize_keys!)
 
         locale = respond_to?(:locale=) ? attributes.try(:[], :locale) :
-                                         attributes.try(:delete, :locale)
+          attributes.try(:delete, :locale)
 
         if locale
           Globalize.with_locale(locale, &block)
