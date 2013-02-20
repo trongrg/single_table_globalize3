@@ -1,6 +1,6 @@
-# Single Table Globalize3 [![Build Status](https://travis-ci.org/svenfuchs/globalize3.png?branch=master)](https://travis-ci.org/svenfuchs/globalize3)
+# Single Table SingleTableGlobalize3 [![Build Status](https://travis-ci.org/svenfuchs/single_table_globalize3.png?branch=master)](https://travis-ci.org/svenfuchs/single_table_globalize3)
 
-Single Table Globalize3 is the successor of Globalize3. Instead of creating multiple
+Single Table SingleTableGlobalize3 is the successor of SingleTableGlobalize3. Instead of creating multiple
 tables for every model, it just creates one single table to store all translations
 It is compatible with and builds on the new
 [I18n API in Ruby on Rails](http://guides.rubyonrails.org/i18n.html) and adds
@@ -13,16 +13,16 @@ model translations to ActiveRecord.
 
 ## Installation
 
-To install Globalize3 with its default setup just use:
+To install Single Table Globalize3 with its default setup just use:
 
-gem install globalize3
+gem install single_table_globalize3
 
 When using bundler put it in your Gemfile:
 
 ```ruby
 source 'https://rubygems.org'
 
-gem 'globalize3'
+gem 'single_table_globalize3'
 ```
 
 ## Model translations
@@ -39,7 +39,7 @@ Allows you to translate the attributes :title and :text per locale:
 
 ```ruby
 I18n.locale = :en
-post.title # => Globalize3 rocks!
+post.title # => SingleTableGlobalize3 rocks!
 
 I18n.locale = :vi
 post.title # => Chuyển ngữ dễ dàng!
@@ -75,16 +75,16 @@ class Post < ActiveRecord::Base
 end
 
 puts post.translations.inspect
-# => [#<Post::Translation id: 1, post_id: 1, locale: "en", title: "Globalize3 rocks!", name: "Globalize3">,
+# => [#<Post::Translation id: 1, post_id: 1, locale: "en", title: "SingleTableGlobalize3 rocks!", name: "SingleTableGlobalize3">,
       #<Post::Translation id: 2, post_id: 1, locale: "nl", title: '', name: nil>]
 
 I18n.locale = :en
-post.title # => 'Globalize3 rocks!'
-post.name  # => 'Globalize3'
+post.title # => 'SingleTableGlobalize3 rocks!'
+post.name  # => 'SingleTableGlobalize3'
 
 I18n.locale = :nl
 post.title # => ''
-post.name  # => 'Globalize3'
+post.name  # => 'SingleTableGlobalize3'
 ```
 
 ```ruby
@@ -93,16 +93,16 @@ class Post < ActiveRecord::Base
 end
 
 puts post.translations.inspect
-# => [#<Post::Translation id: 1, post_id: 1, locale: "en", title: "Globalize3 rocks!", name: "Globalize3">,
+# => [#<Post::Translation id: 1, post_id: 1, locale: "en", title: "SingleTableGlobalize3 rocks!", name: "SingleTableGlobalize3">,
       #<Post::Translation id: 2, post_id: 1, locale: "nl", title: '', name: nil>]
 
 I18n.locale = :en
-post.title # => 'Globalize3 rocks!'
-post.name  # => 'Globalize3'
+post.title # => 'SingleTableGlobalize3 rocks!'
+post.name  # => 'SingleTableGlobalize3'
 
 I18n.locale = :nl
-post.title # => 'Globalize3 rocks!'
-post.name  # => 'Globalize3'
+post.title # => 'SingleTableGlobalize3 rocks!'
+post.name  # => 'SingleTableGlobalize3'
 ```
 
 ## Fallback locales to each other
@@ -138,13 +138,13 @@ translations for the passed in locale.
 ```ruby
 Post.with_translations('en')
 # => [
-  #<Post::Translation id: 1, post_id: 1, locale: "en", title: "Globalize3 rocks!", name: "Globalize3">,
+  #<Post::Translation id: 1, post_id: 1, locale: "en", title: "SingleTableGlobalize3 rocks!", name: "SingleTableGlobalize3">,
   #<Post::Translation id: 2, post_id: 1, locale: "nl", title: '', name: nil>
 ]
 
 Post.with_translations(I18n.locale)
 # => [
-  #<Post::Translation id: 1, post_id: 1, locale: "en", title: "Globalize3 rocks!", name: "Globalize3">,
+  #<Post::Translation id: 1, post_id: 1, locale: "en", title: "SingleTableGlobalize3 rocks!", name: "SingleTableGlobalize3">,
   #<Post::Translation id: 2, post_id: 1, locale: "nl", title: '', name: nil>
 ]
 
@@ -152,7 +152,7 @@ Post.with_translations('de')
 # => []
 ```
 
-## Changes since Globalize3
+## Changes since SingleTableGlobalize3
 
 * Single table with polymorphic association
 * Removed versioning (temporary)

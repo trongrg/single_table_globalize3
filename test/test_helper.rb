@@ -8,7 +8,7 @@ Bundler.require(:default, :test)
 require 'database_cleaner'
 require 'test_declarative'
 
-log = '/tmp/globalize3_test.log'
+log = '/tmp/single_table_globalize3_test.log'
 FileUtils.touch(log) unless File.exists?(log)
 ActiveRecord::Base.logger = Logger.new(log)
 ActiveRecord::LogSubscriber.attach_to(:active_record)

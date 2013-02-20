@@ -1,8 +1,8 @@
-require File.expand_path('../lib/globalize3/version', __FILE__)
+require File.expand_path('../lib/single_table_globalize3/version', __FILE__)
 
 Gem::Specification.new do |s|
-  s.name         = 'globalize3'
-  s.version      = Globalize3::VERSION
+  s.name         = 'single_table_globalize3'
+  s.version      = SingleTableGlobalize3::VERSION
   s.authors      = ['Sven Fuchs', 'Joshua Harvey', 'Clemens Kofler', 'John-Paul Bader', 'Tomasz Stachewicz', 'Philip Arndt', 'Trong Tran']
   s.email        = 'trong.v.tran@gmail.com'
   s.homepage     = 'http://github.com/trongrg/single_table_globalize3'

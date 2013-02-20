@@ -1,6 +1,6 @@
 require 'rails/generators/active_record'
 
-module Globalize3
+module SingleTableGlobalize3
   module Generators
     class MigrationGenerator < ActiveRecord::Generators::Base
       source_root File.expand_path("../templates", __FILE__)
