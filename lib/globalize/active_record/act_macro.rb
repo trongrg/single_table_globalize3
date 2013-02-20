@@ -43,8 +43,6 @@ module Globalize
 
       protected
       def setup_translates!(options)
-        options[:table_name] ||= "#{table_name.singularize}_translations"
-
         class_attribute :translated_attribute_names, :translation_options, :fallbacks_for_empty_translations
         self.translated_attribute_names = []
         self.translation_options        = options
@@ -53,23 +51,14 @@ module Globalize
         include InstanceMethods
         extend  ClassMethods
 
-        translation_class.table_name = options[:table_name] if translation_class.table_name.blank?
-
         has_many :translations, :class_name  => translation_class.name,
                                 :dependent   => :destroy,
-                                :extend      => HasManyExtensions,
                                 :as => :translatable
 
         after_create :save_translations!
         after_update :save_translations!
 
         translation_class.instance_eval %{ attr_accessible :locale }
-      end
-    end
-
-    module HasManyExtensions
-      def find_or_initialize_by_locale(locale)
-        with_locale(locale.to_s).first || build(:locale => locale.to_s)
       end
     end
   end
