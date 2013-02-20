@@ -1,13 +1,10 @@
-# Globalize3 [![Build Status](https://travis-ci.org/svenfuchs/globalize3.png?branch=master)](https://travis-ci.org/svenfuchs/globalize3)
+# Single Table Globalize3 [![Build Status](https://travis-ci.org/svenfuchs/globalize3.png?branch=master)](https://travis-ci.org/svenfuchs/globalize3)
 
-Globalize3 is the successor of Globalize for Rails and is targeted at
-ActiveRecord version 3.x. It is compatible with and builds on the new
+Single Table Globalize3 is the successor of Globalize3. Instead of creating multiple
+tables for every model, it just creates one single table to store all translations
+It is compatible with and builds on the new
 [I18n API in Ruby on Rails](http://guides.rubyonrails.org/i18n.html) and adds
 model translations to ActiveRecord.
-
-Globalize3 is much more lightweight and compatible than its predecessor.
-Model translations in Globalize3 use default ActiveRecord features and no longer
-limit any ActiveRecord functionality.
 
 ## Requirements
 
@@ -44,123 +41,16 @@ Allows you to translate the attributes :title and :text per locale:
 I18n.locale = :en
 post.title # => Globalize3 rocks!
 
-I18n.locale = :he
-post.title # => גלובאלייז2 שולט!
+I18n.locale = :vi
+post.title # => Chuyển ngữ dễ dàng!
 ```
 
-In order to make this work, you'll need to add the appropriate translation tables.
-Globalize3 comes with a handy helper method to help you do this.
-It's called `create_translation_table!`. Here's an example:
+In order to make this work, you only need to run the generator and migration
 
-_Note that your migrations can use `create_translation_table!` and `drop_translation_table!`
-only inside the `up` and `down` instance methods, respectively. You cannot use `create_translation_table!`
-and `drop_translation_table!` inside the `change` instance method in Rails >= 3.1.0._
-
-### Rails 3.0
-
-```ruby
-class CreatePosts < ActiveRecord::Migration
-  def self.up
-    create_table :posts do |t|
-      t.timestamps
-    end
-    Post.create_translation_table! :title => :string, :text => :text
-  end
-  def self.down
-    drop_table :posts
-    Post.drop_translation_table!
-  end
-end
 ```
-
-### Rails >= 3.1.0
-
-***Do not use the `change` method, use `up` and `down`!***
-
-```ruby
-class CreatePosts < ActiveRecord::Migration
-  def up
-    create_table :posts do |t|
-      t.timestamps
-    end
-    Post.create_translation_table! :title => :string, :text => :text
-  end
-  def down
-    drop_table :posts
-    Post.drop_translation_table!
-  end
-end
+rails generate globalize3:migration
+rake db:migrate
 ```
-
-Also, you can pass options for specific columns. Here’s an example:
-
-```ruby
-class CreatePosts < ActiveRecord::Migration
-  def up
-    create_table :posts do |t|
-      t.timestamps
-    end
-    Post.create_translation_table! :title => :string,
-      :text => {:type => :text, :null => false, :default => 'abc'}
-  end
-  def down
-    drop_table :posts
-    Post.drop_translation_table!
-  end
-end
-```
-
-Note that the ActiveRecord model `Post` must already exist and have a `translates`
-directive listing the translated fields.
-
-## Migrating existing data to and from the translated version
-
-As well as creating a translation table, you can also use `create_translation_table!`
-to migrate across any existing data to the default locale. This can also operate
-in reverse to restore any translations from the default locale back to the model
-when you don't want to use a translation table anymore using `drop_translation_table!`
-
-This feature makes use of `untranslated_attributes` which allows access to the
-model's attributes as they were before the translation was applied. Here's an
-example (which assumes you already have a model called `Post` and its table
-exists):
-
-```ruby
-class TranslatePosts < ActiveRecord::Migration
-  def self.up
-    Post.create_translation_table!({
-      :title => :string,
-      :text => :text
-    }, {
-      :migrate_data => true
-    })
-  end
-
-  def self.down
-    Post.drop_translation_table! :migrate_data => true
-  end
-end
-```
-
-## Versioning with Globalize3
-
-Globalize3 nicely integrates with
-[paper_trail](https://github.com/airblade/paper_trail). To add versioning
-support to your model, you'll want to add the `:versioning => true`
-option to your call to <code>translates</code>.  An example from our test suite:
-
-```ruby
-translates :title, :content, :published, :published_at, :versioning => true
-```
-
-You will also need to have already generated the versions table that paper_trail
-expects.  See the paper_trail README for more details.
-
-If you are adding globalize3 to any previously versioned models, please note
-that you will need to add a new `locale` column to your versioning table.
-
-Also, please see the tests in `test/globalize3/versioning_test.rb` for some
-current gotchas.
 
 ## I18n fallbacks for empty translations
 
@@ -261,6 +151,11 @@ Post.with_translations(I18n.locale)
 Post.with_translations('de')
 # => []
 ```
+
+## Changes since Globalize3
+
+* Single table with polymorphic association
+* Removed versioning (temporary)
 
 ## Changes since Globalize2
 
