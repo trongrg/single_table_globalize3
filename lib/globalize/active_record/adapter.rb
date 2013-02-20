@@ -43,18 +43,17 @@ module Globalize
       def save_translations!
         existing_translations = {}
         record.translations.each do |t|
-          existing_translations[t.locale.to_s] = {t.attribute_name.to_s => t}.merge(existing_translations[t.locale.to_s]||{})
+          locale_str = t.locale.to_s
+          existing_translations[locale_str] ||= {}
+          existing_translations[locale_str][t.attribute_name] = t
         end
 
         stash.each do |locale, attrs|
-          if attrs.any?
-            locale_str = locale.to_s
-            attrs.each do |name, value|
-              translation = existing_translations[locale_str][name] if existing_translations[locale_str]
-              translation ||= record.translations.build(:locale => locale_str, :attribute_name => name)
-              translation.value = value
-              translation.save!
-            end
+          locale_str = locale.to_s
+          attrs.each do |name, value|
+            translation = existing_translations[locale_str].try('[]', name) ||
+              record.translations.build(:locale => locale_str, :attribute_name => name)
+            translation.update_attribute(:value, value)
           end
         end
 
