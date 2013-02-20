@@ -1,4 +1,4 @@
-# Single Table SingleTableGlobalize3 [![Build Status](https://travis-ci.org/svenfuchs/single_table_globalize3.png?branch=master)](https://travis-ci.org/svenfuchs/single_table_globalize3)
+# Single Table Globalize3 [![Build Status](https://travis-ci.org/trongrg/single_table_globalize3.png?branch=master)](https://travis-ci.org/trongrg/single_table_globalize3)
 
 Single Table SingleTableGlobalize3 is the successor of SingleTableGlobalize3. Instead of creating multiple
 tables for every model, it just creates one single table to store all translations
