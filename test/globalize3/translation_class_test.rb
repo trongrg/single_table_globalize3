@@ -5,10 +5,6 @@ class TranslationClassTest < Test::Unit::TestCase
     assert_equal Globalize::ActiveRecord::Translation, Post.translation_class
   end
 
-  test 'defines a Translation class nested in the model class' do
-    assert Post.const_defined?(:Translation)
-  end
-
   test 'defines a belongs_to association' do
     assert_belongs_to Globalize::ActiveRecord::Translation, :translatable
   end
