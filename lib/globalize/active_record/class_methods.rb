@@ -3,7 +3,8 @@ module Globalize
     module ClassMethods
       delegate :translated_locales, :set_translations_table_name, :to => :translation_class
 
-      def with_translations(*locales, index)
+      def with_translations(*locales)
+        index = locales.pop if locales.last.is_a?(Fixnum)
         joins("LEFT OUTER JOIN #{translation_class.table_name} #{translations_table_name(index)} ON #{translations_table_name(index)}.translatable_id = #{self.table_name}.id").
         select("#{table_name}.*")
       end
