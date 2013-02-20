@@ -152,7 +152,8 @@ module Globalize
       end
 
       def join_index
-        @join_index ||= 0
+        @join_index = 0 if @join_index.nil? || @join_index > 100
+        @join_index
       end
 
       def join_index=(value)
