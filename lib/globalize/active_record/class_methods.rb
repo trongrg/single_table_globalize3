@@ -1,10 +1,9 @@
 module Globalize
   module ActiveRecord
     module ClassMethods
-      delegate :translated_locales, :set_translations_table_name, :to => :translation_class
+      delegate :translated_locales, :to => :translation_class
 
-      def with_translations(*locales)
-        index = locales.pop if locales.last.is_a?(Fixnum)
+      def with_translations(index = nil)
         joins("LEFT OUTER JOIN #{translation_class.table_name} #{translations_table_name(index)} ON #{translations_table_name(index)}.translatable_id = #{self.table_name}.id").
         select("#{table_name}.*")
       end
@@ -12,7 +11,7 @@ module Globalize
       def with_translated_attribute(name, value, locales = nil)
         locales ||= Globalize.fallbacks
         self.join_index = self.join_index + 1
-        with_translations(locales, self.join_index).where(
+        with_translations(self.join_index).where(
           translated_column_name('attribute_name', self.join_index) => name.to_s,
           translated_column_name(:locale, self.join_index) => Array(locales).map(&:to_s),
           translated_column_name('value', self.join_index) => Array(value).map(&:to_s)
