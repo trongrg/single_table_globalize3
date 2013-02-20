@@ -32,9 +32,12 @@ ActiveRecord::Validations::UniquenessValidator.class_eval do
           value = YAML.dump value
         end
 
-        sql, params  = mount_sql_and_params(finder_class, table_name, attribute, value)
+        sql, params  = mount_sql_and_params(finder_class, table_name, 'value', value)
 
-        relation = table.where(sql, *params).where(:locale => Globalize.locale)
+        relation = table.where(sql, *params).
+          where(:locale => Globalize.locale).
+          where(:attribute_name => attribute).
+          where(:translatable_type => klass.name)
 
         Array.wrap(options[:scope]).each do |scope_item|
           scope_value = record.send(scope_item)

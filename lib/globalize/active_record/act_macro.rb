@@ -52,6 +52,7 @@ module Globalize
         extend  ClassMethods
 
         has_many :translations, :class_name  => translation_class.name,
+                                :foreign_key => :translatable_id,
                                 :dependent   => :destroy,
                                 :as => :translatable
 
