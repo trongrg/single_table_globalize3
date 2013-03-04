@@ -1,10 +1,11 @@
 # Single Table Globalize3 [![Build Status](https://travis-ci.org/trongrg/single_table_globalize3.png?branch=master)](https://travis-ci.org/trongrg/single_table_globalize3)
 
-Single Table SingleTableGlobalize3 is the successor of SingleTableGlobalize3. Instead of creating multiple
+Single Table Globalize3 is the successor of Globalize3. Instead of creating a
 tables for every model, it just creates one single table to store all translations
-It is compatible with and builds on the new
-[I18n API in Ruby on Rails](http://guides.rubyonrails.org/i18n.html) and adds
-model translations to ActiveRecord.
+
+# Credits
+* Sven Fuchs, Joshua Harvey, Clemens Kofler, John-Paul Bader, Tomasz Stachewicz, Philip Arndt and other contributors for the great globalize3 project
+* My girlfriend for inspiring me to complete this
 
 ## Requirements
 
@@ -13,16 +14,17 @@ model translations to ActiveRecord.
 
 ## Installation
 
-To install Single Table Globalize3 with its default setup just use:
-
-gem install single_table_globalize3
+/*To install Single Table Globalize3 with its default setup just use:*/
+/**/
+/*gem install single_table_globalize3*/
+/**/
 
 When using bundler put it in your Gemfile:
 
 ```ruby
 source 'https://rubygems.org'
 
-gem 'single_table_globalize3'
+gem 'single_table_globalize3', :git => 'git://github.com/trongrg/single_table_globalize3.git'
 ```
 
 ## Model translations
@@ -45,7 +47,7 @@ I18n.locale = :vi
 post.title # => Chuyển ngữ dễ dàng!
 ```
 
-In order to make this work, you only need to run the generator and migration
+To setup, you only need to run the generator and migration
 
 ```
 rails generate globalize3:migration
@@ -74,10 +76,6 @@ class Post < ActiveRecord::Base
   translates :title, :name
 end
 
-puts post.translations.inspect
-# => [#<Post::Translation id: 1, post_id: 1, locale: "en", title: "SingleTableGlobalize3 rocks!", name: "SingleTableGlobalize3">,
-      #<Post::Translation id: 2, post_id: 1, locale: "nl", title: '', name: nil>]
-
 I18n.locale = :en
 post.title # => 'SingleTableGlobalize3 rocks!'
 post.name  # => 'SingleTableGlobalize3'
@@ -91,10 +89,6 @@ post.name  # => 'SingleTableGlobalize3'
 class Post < ActiveRecord::Base
   translates :title, :name, :fallbacks_for_empty_translations => true
 end
-
-puts post.translations.inspect
-# => [#<Post::Translation id: 1, post_id: 1, locale: "en", title: "SingleTableGlobalize3 rocks!", name: "SingleTableGlobalize3">,
-      #<Post::Translation id: 2, post_id: 1, locale: "nl", title: '', name: nil>]
 
 I18n.locale = :en
 post.title # => 'SingleTableGlobalize3 rocks!'
@@ -138,8 +132,8 @@ translations for the passed in locale.
 ```ruby
 Post.with_translations('en')
 # => [
-  #<Post::Translation id: 1, post_id: 1, locale: "en", title: "SingleTableGlobalize3 rocks!", name: "SingleTableGlobalize3">,
-  #<Post::Translation id: 2, post_id: 1, locale: "nl", title: '', name: nil>
+#<Globalize::ActiveRecord::Translation id: 10, translatable_id: 1, translatable_type: "Post", locale: "en", attribute_name: "title", value: "Title", created_at: "2013-03-04 11:57:41", updated_at: "2013-03-04 11:57:41">,
+#<Globalize::ActiveRecord::Translation id: 11, translatable_id: 1, translatable_type: "Post", locale: "en", attribute_name: "name", value: "Name", created_at: "2013-03-04 11:57:41", updated_at: "2013-03-04 11:57:41">
 ]
 
 Post.with_translations(I18n.locale)
@@ -152,34 +146,7 @@ Post.with_translations('de')
 # => []
 ```
 
-## Changes since SingleTableGlobalize3
+## Changes since Globalize3
 
 * Single table with polymorphic association
 * Removed versioning (temporary)
-
-## Changes since Globalize2
-
-* `translation_table_name` was renamed to `translations_table_name`
-* `available_locales` has been removed. please use `translated_locales`
-
-## Migration from Globalize for Rails (version 1)
-
-See this script by Tomasz Stachewicz: http://gist.github.com/120867
-
-## Alternative Solutions
-
-* [Veger's fork](http://github.com/veger/globalize2) - uses default AR schema for the default locale, delegates to the translations table for other locales only
-* [TranslatableColumns](http://github.com/iain/translatable_columns) - have multiple languages of the same attribute in a model (Iain Hecker)
-* [Traco](https://github.com/barsoom/traco) - A newer take on using multiple columns in the same model (Barsoom)
-* [localized_record](http://github.com/glennpow/localized_record) - allows records to have localized attributes without any modifications to the database (Glenn Powell)
-* [model_translations](http://github.com/janne/model_translations) - Minimal implementation of Globalize2 style model translations (Jan Andersson)
-
-## Related solutions
-
-* [globalize2_versioning](http://github.com/joshmh/globalize2_versioning) - acts_as_versioned style versioning for globalize2 (Joshua Harvey)
-* [i18n_multi_locales_validations](http://github.com/ZenCocoon/i18n_multi_locales_validations) - multi-locales attributes validations to validates attributes from globalize2 translations models (Sébastien Grosjean)
-* [globalize2 Demo App](http://github.com/svenfuchs/globalize2-demo) - demo application for globalize2 (Sven Fuchs)
-* [migrate_from_globalize1](http://gist.github.com/120867) - migrate model translations from Globalize1 to globalize2 (Tomasz Stachewicz)
-* [easy_globalize2_accessors](http://github.com/astropanic/easy_globalize2_accessors) - easily access (read and write) globalize2-translated fields (astropanic, Tomasz Stachewicz)
-* [globalize2-easy-translate](http://github.com/bsamman/globalize2-easy-translate) - adds methods to easily access or set translated attributes to your model (bsamman)
-* [batch_translations](http://github.com/rilla/batch_translations) - allow saving multiple globalize2 translations in the same request (Jose Alvarez Rilla)
