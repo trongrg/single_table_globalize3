@@ -5,7 +5,7 @@ class CreateGlobalizeTranslations < ActiveRecord::Migration
       t.string :translatable_type
       t.string :locale
       t.string :attribute_name
-      t.string :value
+      t.text :value
       t.timestamps
     end
     add_index :globalize_translations, [:translatable_id, :translatable_type], :name => :index_globalize_translalation_1
