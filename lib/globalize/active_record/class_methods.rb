@@ -3,17 +3,20 @@ module Globalize
     module ClassMethods
       delegate :translated_locales, :to => :translation_class
 
-      def with_translations(index = nil)
+      def with_translations(*locales)
+        locales = [locales].flatten
+        index = locales.pop if locales.last.is_a?(Fixnum)
+        locales = Globalize.fallbacks if locales.empty?
         joins("LEFT OUTER JOIN #{translation_class.table_name} #{translations_table_name(index)} ON #{translations_table_name(index)}.translatable_id = #{self.table_name}.id").
-        select("#{table_name}.*")
+        select("distinct #{table_name}.*").
+        where(translated_column_name('locale', index) => locales)
       end
 
       def with_translated_attribute(name, value, locales = nil)
         locales ||= Globalize.fallbacks
         self.join_index = self.join_index + 1
-        with_translations(self.join_index).where(
+        with_translations(locales, self.join_index).where(
           translated_column_name('attribute_name', self.join_index) => name.to_s,
-          translated_column_name(:locale, self.join_index) => Array(locales).map(&:to_s),
           translated_column_name('value', self.join_index) => Array(value).map(&:to_s)
         )
       end
