@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
     s.add_dependency 'activerecord', '~> 3.1.0'
     s.add_dependency 'activemodel', '~> 3.1.0'
   elsif ENV['RAILS_3_2']
-  	s.add_dependency 'activerecord', '~> 3.2.0'
+    s.add_dependency 'activerecord', '~> 3.2.0'
     s.add_dependency 'activemodel', '~> 3.2.0'
   else
     # normal case
