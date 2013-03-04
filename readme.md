@@ -14,17 +14,17 @@ tables for every model, it just creates one single table to store all translatio
 
 ## Installation
 
-/*To install Single Table Globalize3 with its default setup just use:*/
-/**/
-/*gem install single_table_globalize3*/
-/**/
+To install Single Table Globalize3 with its default setup just use:
+
+gem install single_table_globalize3
+
 
 When using bundler put it in your Gemfile:
 
 ```ruby
 source 'https://rubygems.org'
 
-gem 'single_table_globalize3', :git => 'git://github.com/trongrg/single_table_globalize3.git'
+gem 'single_table_globalize3'
 ```
 
 ## Model translations
