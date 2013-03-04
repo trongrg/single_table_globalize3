@@ -1,6 +1,6 @@
 # Single Table Globalize3 [![Build Status](https://travis-ci.org/trongrg/single_table_globalize3.png?branch=master)](https://travis-ci.org/trongrg/single_table_globalize3)
 
-Single Table Globalize3 is the successor of Globalize3. Instead of creating a
+Single Table Globalize3 is the successor of Globalize3. Instead of creating
 tables for every model, it just creates one single table to store all translations
 
 # Credits
@@ -41,10 +41,10 @@ Allows you to translate the attributes :title and :text per locale:
 
 ```ruby
 I18n.locale = :en
-post.title # => SingleTableGlobalize3 rocks!
+post.title # => 'SingleTableGlobalize3 rocks!'
 
 I18n.locale = :vi
-post.title # => Chuyển ngữ dễ dàng!
+post.title # => 'Chuyển ngữ dễ dàng!'
 ```
 
 To setup, you only need to run the generator and migration
@@ -132,14 +132,38 @@ translations for the passed in locale.
 ```ruby
 Post.with_translations('en')
 # => [
-#<Globalize::ActiveRecord::Translation id: 10, translatable_id: 1, translatable_type: "Post", locale: "en", attribute_name: "title", value: "Title", created_at: "2013-03-04 11:57:41", updated_at: "2013-03-04 11:57:41">,
-#<Globalize::ActiveRecord::Translation id: 11, translatable_id: 1, translatable_type: "Post", locale: "en", attribute_name: "name", value: "Name", created_at: "2013-03-04 11:57:41", updated_at: "2013-03-04 11:57:41">
+  #<Post:0x007faf99ba03b0> {
+    :created_at => Mon, 04 Mar 2013 22:21:14 UTC +00:00,
+            :id => 1,
+          :name => "Cool!",
+         :title => "SingleTableGlobalize3",
+    :updated_at => Mon, 04 Mar 2013 22:23:52 UTC +00:00
+  },
+  #<Post:0x007faf95c12f68> {
+    :created_at => Mon, 04 Mar 2013 22:25:10 UTC +00:00,
+            :id => 2,
+          :name => "Test",
+         :title => "Title",
+    :updated_at => Mon, 04 Mar 2013 22:25:10 UTC +00:00
+  }
 ]
 
 Post.with_translations(I18n.locale)
 # => [
-  #<Post::Translation id: 1, post_id: 1, locale: "en", title: "SingleTableGlobalize3 rocks!", name: "SingleTableGlobalize3">,
-  #<Post::Translation id: 2, post_id: 1, locale: "nl", title: '', name: nil>
+  #<Post:0x007faf99ba03b0> {
+    :created_at => Mon, 04 Mar 2013 22:21:14 UTC +00:00,
+            :id => 1,
+          :name => "Cool!",
+         :title => "SingleTableGlobalize3",
+    :updated_at => Mon, 04 Mar 2013 22:23:52 UTC +00:00
+  },
+  #<Post:0x007faf95c12f68> {
+    :created_at => Mon, 04 Mar 2013 22:25:10 UTC +00:00,
+            :id => 2,
+          :name => "Test",
+         :title => "Title",
+    :updated_at => Mon, 04 Mar 2013 22:25:10 UTC +00:00
+  }
 ]
 
 Post.with_translations('de')
