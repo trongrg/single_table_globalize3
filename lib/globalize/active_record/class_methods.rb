@@ -4,8 +4,8 @@ module Globalize
       delegate :translated_locales, :to => :translation_class
 
       def with_translations(*locales)
-        locales = [locales].flatten
         index = locales.pop if locales.last.is_a?(Fixnum)
+        locales = [locales].flatten.map(&:to_s)
         locales = Globalize.fallbacks if locales.empty?
         joins("LEFT OUTER JOIN #{translation_class.table_name} #{translations_table_name(index)} ON #{translations_table_name(index)}.translatable_id = #{self.table_name}.id").
         select("distinct #{table_name}.*").
