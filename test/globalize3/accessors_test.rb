@@ -4,63 +4,63 @@ require File.expand_path('../../test_helper', __FILE__)
 
 class AccessorsTest < Test::Unit::TestCase
   test "*_translatons methods are generated" do
-    assert User.new.respond_to?(:name_translations)
-    assert User.new.respond_to?(:name_translations=)
+    assert Post.new.respond_to?(:title_translations)
+    assert Post.new.respond_to?(:title_translations=)
   end
 
-  test "new user name_translations" do
-    user = User.new
+  test "new post title_translations" do
+    post = Post.new
     translations = {}
-    assert_equal translations, user.name_translations
+    assert_equal translations, post.title_translations
   end
 
-  test "new user name_translations with name assigned" do
-    user = User.new(:name => 'John')
+  test "new post title_translations with title assigned" do
+    post = Post.new(:title => 'John', :content => "content")
     translations = {:en => 'John'}.stringify_keys!
-    assert_equal translations, user.name_translations
+    assert_equal translations, post.title_translations
 
-    with_locale(:de) { user.name = 'Jan' }
+    with_locale(:de) { post.title = 'Jan' }
     translations = {:en => 'John', :de => 'Jan'}.stringify_keys!
-    assert_equal translations, user.name_translations
+    assert_equal translations, post.title_translations
   end
 
-  test "created user name_translations" do
-    user = User.create(:name => 'John', :email => 'mad@max.com')
+  test "created post title_translations" do
+    post = Post.create(:title => 'John', :content => 'mad@max.com')
     translations = {:en => 'John'}.stringify_keys!
-    assert_equal translations, user.name_translations
+    assert_equal translations, post.title_translations
 
-    with_locale(:de) { user.name = 'Jan' }
+    with_locale(:de) { post.title = 'Jan' }
     translations = {:en => 'John', :de => 'Jan'}.stringify_keys!
-    assert_equal translations, user.name_translations
+    assert_equal translations, post.title_translations
 
-    user.save
-    assert_equal translations, user.name_translations
+    post.save
+    assert_equal translations, post.title_translations
 
-    user.reload
-    assert_equal translations, user.name_translations
+    post.reload
+    assert_equal translations, post.title_translations
   end
 
-  test "new user name_translations=" do
-    user = User.new(:name => 'Max', :email => 'mad@max.com')
-    user.name_translations = {:en => 'John', :de => 'Jan', :ru => 'Иван'}
-    assert_translated user, :en, :name, 'John'
-    assert_translated user, :de, :name, 'Jan'
-    assert_translated user, :ru, :name, 'Иван'
+  test "new post title_translations=" do
+    post = Post.new(:title => 'Max', :content => 'mad@max.com')
+    post.title_translations = {:en => 'John', :de => 'Jan', :ru => 'Иван'}
+    assert_translated post, :en, :title, 'John'
+    assert_translated post, :de, :title, 'Jan'
+    assert_translated post, :ru, :title, 'Иван'
 
-    user.save
-    assert_translated user, :en, :name, 'John'
-    assert_translated user, :de, :name, 'Jan'
-    assert_translated user, :ru, :name, 'Иван'
+    post.save
+    assert_translated post, :en, :title, 'John'
+    assert_translated post, :de, :title, 'Jan'
+    assert_translated post, :ru, :title, 'Иван'
   end
 
-  test "created user name_translations=" do
-    user = User.create(:name => 'Max', :email => 'mad@max.com')
-    user.name_translations = {:en => 'John', :de => 'Jan', :ru => 'Иван'}
-    assert_translated user, :en, :name, 'John'
-    assert_translated user, :de, :name, 'Jan'
-    assert_translated user, :ru, :name, 'Иван'
+  test "created post title_translations=" do
+    post = Post.create(:title => 'Max', :content => 'mad@max.com')
+    post.title_translations = {:en => 'John', :de => 'Jan', :ru => 'Иван'}
+    assert_translated post, :en, :title, 'John'
+    assert_translated post, :de, :title, 'Jan'
+    assert_translated post, :ru, :title, 'Иван'
 
     translations = {:en => 'John', :de => 'Jan', :ru => 'Иван'}.stringify_keys!
-    assert_equal translations, user.name_translations
+    assert_equal translations, post.title_translations
   end
 end
