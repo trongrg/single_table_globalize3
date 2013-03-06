@@ -14,9 +14,8 @@ module Globalize
       end
 
       def fetch_stash(locale, name)
-        value = stash.read(locale, name)
-        return value if value
-        return nil
+        stash.read(locale, name)
+      end
       end
 
       def stash_contains?(locale, name)
@@ -41,23 +40,28 @@ module Globalize
       end
 
       def save_translations!
-        existing_translations = {}
-        record.translations.each do |t|
-          locale_str = t.locale.to_s
-          existing_translations[locale_str] ||= {}
-          existing_translations[locale_str][t.attribute_name] = t
-        end
+        translations = existing_translations
 
         stash.each do |locale, attrs|
           locale_str = locale.to_s
           attrs.each do |name, value|
-            translation = existing_translations[locale_str].try('[]', name) ||
+            translation = translations[locale_str].try('[]', name) ||
               record.translations.build(:locale => locale_str, :attribute_name => name)
             translation.update_attribute(:value, value)
           end
         end
 
         reset
+      end
+
+      def existing_translations
+        existing_translations = {}
+        record.translations.each do |t|
+          locale_str = t.locale.to_s
+          existing_translations[locale_str] ||= {}
+          existing_translations[locale_str][t.attribute_name] = t
+        end
+        existing_translations
       end
 
       def reset
