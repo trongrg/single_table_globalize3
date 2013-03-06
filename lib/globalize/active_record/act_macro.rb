@@ -9,31 +9,13 @@ module Globalize
         attr_names = attr_names.map(&:to_sym)
         attr_names -= translated_attribute_names if defined?(translated_attribute_names)
 
-        if attr_names.present?
-          translation_class.instance_eval %{
-            attr_accessible :#{attr_names.join(', :')}
-          }
+        attr_names.each do |attr_name|
+          # Create accessors for the attribute.
+          translated_attr_accessor(attr_name)
+          translations_accessor(attr_name)
 
-          attr_names.each do |attr_name|
-            # Detect and apply serialization.
-            serializer = self.serialized_attributes[attr_name.to_s]
-            if serializer.present?
-              if defined?(::ActiveRecord::Coders::YAMLColumn) &&
-                 serializer.is_a?(::ActiveRecord::Coders::YAMLColumn)
-
-                serializer = serializer.object_class
-              end
-
-              translation_class.send :serialize, attr_name, serializer
-            end
-
-            # Create accessors for the attribute.
-            translated_attr_accessor(attr_name)
-            translations_accessor(attr_name)
-
-            # Add attribute to the list.
-            self.translated_attribute_names << attr_name
-          end
+          # Add attribute to the list.
+          self.translated_attribute_names << attr_name
         end
       end
 
@@ -58,8 +40,8 @@ module Globalize
 
         after_create :save_translations!
         after_update :save_translations!
-
-        translation_class.instance_eval %{ attr_accessible :locale }
+        # if attr_accessible is explicitly defined in the class, add locale to it
+        attr_accessible :locale if self.accessible_attributes.to_a.present?
       end
     end
   end
