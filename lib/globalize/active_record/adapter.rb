@@ -16,6 +16,15 @@ module Globalize
       def fetch_stash(locale, name)
         stash.read(locale, name)
       end
+
+      def fetch_locales(name)
+        stash.keys.inject({}) do |result, locale|
+          if stash_contains?(locale, name)
+            result.update(locale => fetch_stash(locale, name))
+          else
+            result
+          end
+        end
       end
 
       def stash_contains?(locale, name)

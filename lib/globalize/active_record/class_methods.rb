@@ -139,12 +139,7 @@ module Globalize
 
       def translations_accessor(name)
         define_method(:"#{name}_translations") do
-          result = translations.attribute(name).each_with_object(HashWithIndifferentAccess.new) do |translation, result|
-            result[translation.locale] = translation.value
-          end
-          globalize.stash.keys.each_with_object(result) do |locale, result|
-            result[locale] = globalize.fetch_stash(locale, name) if globalize.stash_contains?(locale, name)
-          end
+          translations.attribute_translations(name).merge(globalize.fetch_locales(name))
         end
         define_method(:"#{name}_translations=") do |value|
           value.each do |(locale, value)|

@@ -28,6 +28,12 @@ module Globalize
           attribute = attribute.to_s
           where :attribute_name => attribute
         end
+
+        def attribute_translations(attribute)
+          attribute(attribute).inject(HashWithIndifferentAccess.new) do |hash, translation|
+            hash.update(translation.locale => translation.value)
+          end
+        end
       end
 
       def locale
