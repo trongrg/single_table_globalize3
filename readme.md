@@ -50,7 +50,7 @@ post.title # => 'Chuyển ngữ dễ dàng!'
 To setup, you only need to run the generator and migration
 
 ```
-rails generate globalize3:migration
+rails generate single_table_globalize3:migration
 rake db:migrate
 ```
 
@@ -66,7 +66,7 @@ You can enable them by adding the next line to `config/application.rb` (or only
 config.i18n.fallbacks = true
 ```
 
-By default, globalize3 will only use fallbacks when your translation model does
+By default, single_table_globalize3 will only use fallbacks when your translation model does
 not exist or the translation value for the item you've requested is `nil`.
 However it is possible to also use fallbacks for `blank` translations by adding
 `:fallbacks_for_empty_translations => true` to the `translates` method.
@@ -108,7 +108,7 @@ class Post < ActiveRecord::Base
   translates :title, :name
 end
 
-Globalize.fallbacks = {:en => [:en, :pl], :pl => [:pl, :en]}
+SingleTableGlobalize3.fallbacks = {:en => [:en, :pl], :pl => [:pl, :en]}
 
 I18n.locale = :en
 en_post = Post.create(:title => 'en_title')
