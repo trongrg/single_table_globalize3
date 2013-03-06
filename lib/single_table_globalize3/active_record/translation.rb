@@ -1,4 +1,4 @@
-module Globalize
+module SingleTableGlobalize3
   module ActiveRecord
     class Translation < ::ActiveRecord::Base
       if self.respond_to?(:table_name=)

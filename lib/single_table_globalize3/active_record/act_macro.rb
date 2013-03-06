@@ -1,4 +1,4 @@
-module Globalize
+module SingleTableGlobalize3
   module ActiveRecord
     module ActMacro
       def translates(*attr_names)

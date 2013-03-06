@@ -82,7 +82,7 @@ class ValidationsTest < Test::Unit::TestCase
     #create
     assert !Validatee.new(:string => 'a').valid?
     assert Validatee.new(:string => 'b').valid?
-    Globalize.with_locale(:de) {
+    SingleTableGlobalize3.with_locale(:de) {
       assert Validatee.new(:string => 'a').valid?,
              "Validate with string 'a' was incorrectly considered invalid #{Validatee.first.attributes.inspect}"
     }
@@ -91,7 +91,7 @@ class ValidationsTest < Test::Unit::TestCase
     Validatee.create!(:string => 'b')
     assert validatee.update_attributes(:string => 'a')
     assert !validatee.update_attributes(:string => 'b')
-    Globalize.with_locale(:de) { assert validatee.update_attributes(:string => 'b') }
+    SingleTableGlobalize3.with_locale(:de) { assert validatee.update_attributes(:string => 'b') }
 
     # nested model (to check for this: https://github.com/resolve/refinerycms/pull/1486 )
     Nested::NestedValidatee.class_eval { validates_uniqueness_of :string }

@@ -1,11 +1,11 @@
-module Globalize
+module SingleTableGlobalize3
   module ActiveRecord
     module ClassMethods
       delegate :translated_locales, :to => :translation_class
 
       def with_translations(*locales)
         index = locales.pop if locales.last.is_a?(Fixnum)
-        locales = locales.concat(Globalize.fallbacks).flatten.map(&:to_s)
+        locales = locales.concat(SingleTableGlobalize3.fallbacks).flatten.map(&:to_s)
         alias_table_name = translations_table_name(index)
 
         joins("LEFT OUTER JOIN #{translation_class.table_name} #{alias_table_name} ON #{alias_table_name}.translatable_id = #{table_name}.id").
@@ -14,7 +14,7 @@ module Globalize
       end
 
       def with_translated_attribute(name, value, locales = nil)
-        locales ||= Globalize.fallbacks
+        locales ||= SingleTableGlobalize3.fallbacks
         self.join_index = self.join_index + 1
         with_translations(locales, self.join_index).where(
           translated_column_name('attribute_name', self.join_index) => name.to_s,
@@ -35,7 +35,7 @@ module Globalize
       end
 
       def translation_class
-        Globalize::ActiveRecord::Translation
+        SingleTableGlobalize3::ActiveRecord::Translation
       end
 
       def translations_table_name(index = nil)

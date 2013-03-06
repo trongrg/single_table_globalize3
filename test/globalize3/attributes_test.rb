@@ -128,7 +128,7 @@ class AttributesTest < Test::Unit::TestCase
     assert_translated child, :he, :content, 'baz'
   end
 
-  test 'attribute reader without arguments will use the current locale on Globalize or I18n' do
+  test 'attribute reader without arguments will use the current locale on SingleTableGlobalize3 or I18n' do
     with_locale(:de) do
       Post.create!(:title => 'Titel', :content => 'Inhalt')
     end
@@ -136,7 +136,7 @@ class AttributesTest < Test::Unit::TestCase
     assert_equal 'Titel', Post.first.title
 
     I18n.locale = :en
-    Globalize.locale = :de
+    SingleTableGlobalize3.locale = :de
     assert_equal 'Titel', Post.first.title
   end
 

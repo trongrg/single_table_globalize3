@@ -9,7 +9,7 @@ ActiveRecord::Validations::UniquenessValidator.class_eval do
         table = finder_class.arel_table
 
         relation = build_relation(finder_class, table, 'attribute_name', attribute).
-          and(table[:locale].eq(Globalize.locale)).
+          and(table[:locale].eq(SingleTableGlobalize3.locale)).
           and(table[:value].eq(value)).
           and(table[:translatable_type].eq(klass.name))
         relation = relation.and(table[klass.reflect_on_association(:translations).foreign_key].not_eq(record.send(:id))) if record.persisted?
@@ -35,7 +35,7 @@ ActiveRecord::Validations::UniquenessValidator.class_eval do
         sql, params  = mount_sql_and_params(finder_class, table_name, 'value', value)
 
         relation = table.where(sql, *params).
-          where(:locale => Globalize.locale).
+          where(:locale => SingleTableGlobalize3.locale).
           where(:attribute_name => attribute).
           where(:translatable_type => klass.name)
 

@@ -1,4 +1,4 @@
-module Globalize
+module SingleTableGlobalize3
   module ActiveRecord
     class Adapter
       # The cache caches attributes that already were looked up for read access.

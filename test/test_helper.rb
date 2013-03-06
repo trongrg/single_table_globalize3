@@ -15,7 +15,7 @@ ActiveRecord::LogSubscriber.attach_to(:active_record)
 ActiveRecord::Base.establish_connection(:adapter => 'sqlite3', :database => ':memory:')
 
 $:.unshift File.expand_path('../../lib', __FILE__)
-require 'globalize'
+require 'single_table_globalize3'
 require 'erb'
 
 require File.expand_path('../data/schema', __FILE__)
@@ -26,7 +26,7 @@ DatabaseCleaner.strategy = :truncation
 class Test::Unit::TestCase
   def setup
     I18n.locale = I18n.default_locale = :en
-    Globalize.locale = nil
+    SingleTableGlobalize3.locale = nil
     DatabaseCleaner.start
   end
 
@@ -35,7 +35,7 @@ class Test::Unit::TestCase
   end
 
   def with_locale(*args, &block)
-    Globalize.with_locale(*args, &block)
+    SingleTableGlobalize3.with_locale(*args, &block)
   end
 
   def with_fallbacks

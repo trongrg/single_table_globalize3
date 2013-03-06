@@ -2,21 +2,21 @@ require File.expand_path('../../test_helper', __FILE__)
 
 class TranslationClassTest < Test::Unit::TestCase
   test 'translation_class returns the Translation class' do
-    assert_equal Globalize::ActiveRecord::Translation, Post.translation_class
+    assert_equal SingleTableGlobalize3::ActiveRecord::Translation, Post.translation_class
   end
 
   test 'defines a belongs_to association' do
-    assert_belongs_to Globalize::ActiveRecord::Translation, :translatable
+    assert_belongs_to SingleTableGlobalize3::ActiveRecord::Translation, :translatable
   end
 
   test 'defines a reader for :locale that returns a symbol' do
-    post = Globalize::ActiveRecord::Translation.new
+    post = SingleTableGlobalize3::ActiveRecord::Translation.new
     post.send(:write_attribute, 'locale', 'de')
     assert_equal :de, post.locale
   end
 
   test 'defines a write for :locale that writes a string' do
-    post = Globalize::ActiveRecord::Translation.new
+    post = SingleTableGlobalize3::ActiveRecord::Translation.new
     post.locale = :de
     assert_equal 'de', post.read_attribute('locale')
   end
@@ -58,15 +58,15 @@ class TranslationClassTest < Test::Unit::TestCase
   end
 
   test "valid translations must have an associated (non-empty) locale" do
-    assert !Globalize::ActiveRecord::Translation.new.valid?
-    assert !Globalize::ActiveRecord::Translation.new(:locale => nil).valid?
-    assert !Globalize::ActiveRecord::Translation.new(:locale => '').valid?
+    assert !SingleTableGlobalize3::ActiveRecord::Translation.new.valid?
+    assert !SingleTableGlobalize3::ActiveRecord::Translation.new(:locale => nil).valid?
+    assert !SingleTableGlobalize3::ActiveRecord::Translation.new(:locale => '').valid?
   end
 
   test "valid translations must have an associated attribute_name" do
-    assert !Globalize::ActiveRecord::Translation.new.valid?
-    assert !Globalize::ActiveRecord::Translation.new(:attribute_name => nil).valid?
-    assert !Globalize::ActiveRecord::Translation.new(:attribute_name => '').valid?
+    assert !SingleTableGlobalize3::ActiveRecord::Translation.new.valid?
+    assert !SingleTableGlobalize3::ActiveRecord::Translation.new(:attribute_name => nil).valid?
+    assert !SingleTableGlobalize3::ActiveRecord::Translation.new(:attribute_name => '').valid?
   end
 end
 

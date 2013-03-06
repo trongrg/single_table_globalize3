@@ -5,7 +5,7 @@
 #
 # E.g.
 #
-#   require 'globalize/i18n/missing_translations_raise_handler'
+#   require 'single_table_globalize3/i18n/missing_translations_raise_handler'
 #   I18n.exception_handler = :missing_translations_raise_handler
 module I18n
   class << self

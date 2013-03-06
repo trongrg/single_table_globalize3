@@ -174,7 +174,7 @@ class TranslatedTest < Test::Unit::TestCase
 
   test 'fallback to each other' do
     I18n.fallbacks.clear
-    Globalize.fallbacks = {:en => [:en, :pl], :pl => [:pl, :en]}
+    SingleTableGlobalize3.fallbacks = {:en => [:en, :pl], :pl => [:pl, :en]}
     I18n.locale = :en
 
     en_task = Task.create(:name => 'en_text')
@@ -189,7 +189,7 @@ class TranslatedTest < Test::Unit::TestCase
     I18n.locale = :en
     assert_equal 'pl_text', pl_task.name
 
-    Globalize.fallbacks = nil
+    SingleTableGlobalize3.fallbacks = nil
   end
 
   test "name_translations should not use fallbacks" do

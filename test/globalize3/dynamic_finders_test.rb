@@ -108,7 +108,7 @@ class DynamicFindersTest < Test::Unit::TestCase
 
   test "records returned by dynamic finders have all translations" do
     post = Post.create(:title => 'a title')
-    Globalize.with_locale(:ja) { post.update_attributes(:title => 'タイトル') }
+    SingleTableGlobalize3.with_locale(:ja) { post.update_attributes(:title => 'タイトル') }
     post_by_df = Post.find_by_title('a title')
     assert_equal post.translations, post_by_df.translations
   end

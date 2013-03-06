@@ -1,7 +1,7 @@
-# Helper class for storing values per locale. Used by Globalize::Adapter
+# Helper class for storing values per locale. Used by SingleTableGlobalize3::Adapter
 # to stash and cache attribute values.
 
-module Globalize
+module SingleTableGlobalize3
   module ActiveRecord
     class Attributes < Hash # TODO: Think about using HashWithIndifferentAccess ?
       def [](locale)

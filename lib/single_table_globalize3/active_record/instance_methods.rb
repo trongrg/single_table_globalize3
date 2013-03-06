@@ -1,4 +1,4 @@
-module Globalize
+module SingleTableGlobalize3
   module ActiveRecord
     module InstanceMethods
       delegate :translated_locales, :to => :translations
@@ -48,7 +48,7 @@ module Globalize
 
       def write_attribute(name, value, options = {})
         if translated?(name)
-          options = {:locale => Globalize.locale}.merge(deprecated_options(options))
+          options = {:locale => SingleTableGlobalize3.locale}.merge(deprecated_options(options))
 
           # Dirty tracking, paraphrased from
           # ActiveRecord::AttributeMethods::Dirty#write_attribute.
@@ -68,7 +68,7 @@ module Globalize
 
       def read_attribute(name, options = {})
         options = {:translated => true, :locale => nil}.merge(deprecated_options(options))
-        if (self.class.translated?(name) && options[:translated]) && (value = globalize.fetch(options[:locale] || Globalize.locale, name))
+        if (self.class.translated?(name) && options[:translated]) && (value = globalize.fetch(options[:locale] || SingleTableGlobalize3.locale, name))
           value
         else
           super(name)
@@ -132,7 +132,7 @@ module Globalize
       end
 
       def translation
-        translations_for_locale(::Globalize.locale)
+        translations_for_locale(::SingleTableGlobalize3.locale)
       end
 
       def translation_for(locale, name, build_if_missing = true)
@@ -157,7 +157,7 @@ module Globalize
       end
 
       def globalize_fallbacks(locale)
-        Globalize.fallbacks(locale)
+        SingleTableGlobalize3.fallbacks(locale)
       end
 
       private
@@ -200,7 +200,7 @@ module Globalize
           attributes.try(:delete, :locale)
 
         if locale
-          Globalize.with_locale(locale, &block)
+          SingleTableGlobalize3.with_locale(locale, &block)
         else
           yield
         end

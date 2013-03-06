@@ -100,9 +100,9 @@ class SingleTableGlobalize3Test < Test::Unit::TestCase
   test "destroy destroys dependent translations" do
     post = Post.create(:title => "title")
     post.update_attributes(:title => 'Titel', :locale => :de)
-    assert_equal 2, Globalize::ActiveRecord::Translation.count
+    assert_equal 2, SingleTableGlobalize3::ActiveRecord::Translation.count
     post.destroy
-    assert_equal 0, Globalize::ActiveRecord::Translation.count
+    assert_equal 0, SingleTableGlobalize3::ActiveRecord::Translation.count
   end
 
   test "to_xml includes translated fields" do
