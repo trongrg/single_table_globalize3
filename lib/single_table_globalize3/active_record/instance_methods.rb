@@ -38,7 +38,7 @@ module SingleTableGlobalize3
             raise NoMethodError.new("unknown attribute: #{key}") unless attribute_names.flatten.include?(key.to_s)
             translation = translation_for(locale, key.to_s)
             translation.value = value
-            translation.save
+            translation.save!
           end
         end
         globalize.reset
