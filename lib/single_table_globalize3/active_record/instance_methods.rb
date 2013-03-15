@@ -64,6 +64,24 @@ module SingleTableGlobalize3
         return obj
       end
 
+      def dup
+        obj = super
+
+        obj.instance_variable_set(:@translations, nil)
+        obj.instance_variable_set(:@globalize, nil )
+        each_locale_and_translated_attribute do |locale, name|
+          obj.globalize.write(locale, name, globalize.fetch(locale, name) )
+        end
+
+        return obj
+      end
+
+      def rollback
+        # translation_caches[::SingleTableGlobalize3.locale] = previous_version.translation
+        instance_variable_set('@globalize', previous_version.try(:globalize))
+        self.version = versions.for_this_locale.last
+      end
+
       def translation
         translations_for_locale(::SingleTableGlobalize3.locale)
       end
@@ -124,6 +142,7 @@ module SingleTableGlobalize3
       def save_translations!
         globalize.save_translations!
         translation_caches.clear
+        self.locale = nil unless self.class.attribute_names.include?('locale')
       end
 
       def with_given_locale(attributes, &block)

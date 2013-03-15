@@ -4,6 +4,7 @@ require 'patches/active_record/uniqueness_validator'
 
 module SingleTableGlobalize3
   autoload :ActiveRecord, 'single_table_globalize3/active_record'
+  autoload :Versioning,   'single_table_globalize3/versioning'
 
   class << self
     def locale
