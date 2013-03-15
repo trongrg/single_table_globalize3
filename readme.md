@@ -54,6 +54,21 @@ rails generate single_table_globalize3:migration
 rake db:migrate
 ```
 
+If you want to enable versioning with paper trail, just pass in argument --with-versioning
+
+```
+rails generate single_table_globalize3:migration --with-versioning
+rake db:migrate
+```
+
+And enable versioning in models
+
+```ruby
+class Post < ActiveRecord::Base
+  translates :title, :text, :versioning => true
+end
+```
+
 ## I18n fallbacks for empty translations
 
 It is possible to enable fallbacks for empty translations. It will depend on the
@@ -173,4 +188,3 @@ Post.with_translations('de')
 ## Changes since Globalize3
 
 * Single table with polymorphic association
-* Removed versioning (temporary)
