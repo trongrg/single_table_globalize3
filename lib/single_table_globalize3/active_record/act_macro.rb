@@ -25,10 +25,7 @@ module SingleTableGlobalize3
 
       protected
       def setup_translates!(options)
-        class_attribute :translated_attribute_names, :translation_options, :fallbacks_for_empty_translations
-        self.translated_attribute_names = []
-        self.translation_options        = options
-        self.fallbacks_for_empty_translations = options[:fallbacks_for_empty_translations]
+        setup_class_attributes(options)
 
         include InstanceMethods
         extend  ClassMethods
@@ -40,13 +37,29 @@ module SingleTableGlobalize3
 
         after_create :save_translations!
         after_update :save_translations!
+
+        setup_locale_attribute
+
+        setup_versioning if options[:versioning]
+      end
+
+      def setup_class_attributes(options)
+        class_attribute :translated_attribute_names, :translation_options, :fallbacks_for_empty_translations
+        self.translated_attribute_names       = []
+        self.translation_options              = options
+        self.fallbacks_for_empty_translations = options[:fallbacks_for_empty_translations]
+      end
+
+      def setup_versioning
+        ::ActiveRecord::Base.extend(SingleTableGlobalize3::Versioning::PaperTrail)
+        has_paper_trail :meta => {:locale => lambda{|record| record.locale}}
+      end
+
+      def setup_locale_attribute
         attr_accessor :locale unless self.attribute_names.include?('locale')
+
         # if attr_accessible is explicitly defined in the class, add locale to it
         attr_accessible :locale if self.accessible_attributes.to_a.present?
-        if options[:versioning]
-          ::ActiveRecord::Base.extend(SingleTableGlobalize3::Versioning::PaperTrail)
-          has_paper_trail :meta => {:locale => lambda{|record| record.locale}}
-        end
       end
     end
   end
