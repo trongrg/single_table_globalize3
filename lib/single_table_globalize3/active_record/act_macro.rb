@@ -40,8 +40,13 @@ module SingleTableGlobalize3
 
         after_create :save_translations!
         after_update :save_translations!
+        attr_accessor :locale unless self.attribute_names.include?('locale')
         # if attr_accessible is explicitly defined in the class, add locale to it
         attr_accessible :locale if self.accessible_attributes.to_a.present?
+        if options[:versioning]
+          ::ActiveRecord::Base.extend(SingleTableGlobalize3::Versioning::PaperTrail)
+          has_paper_trail :meta => {:locale => lambda{|record| record.locale}}
+        end
       end
     end
   end

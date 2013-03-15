@@ -55,7 +55,7 @@ module SingleTableGlobalize3
 
       def translated_attributes
         translated_attribute_names.inject({}) do |attributes, name|
-          attributes.merge(name.to_s => translation[name.to_s].try(:value))
+          attributes.merge(name.to_s => read_attribute(name))
         end
       end
 
