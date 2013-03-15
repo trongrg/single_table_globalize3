@@ -86,9 +86,8 @@ module SingleTableGlobalize3
       end
 
       def translation_for(locale, name, build_if_missing = true)
-        translation_caches[locale] ||= {}
+        translation_caches[locale] ||= HashWithIndifferentAccess.new
         translation_caches[locale][name] ||= (translations.detect{|t| t.locale == locale && t.attribute_name == name.to_s}) ||
-          (translations.attribute(name).with_locale(locale).first) ||
           (translations.build(:locale => locale, :attribute_name => name) if build_if_missing)
       end
 
@@ -97,13 +96,13 @@ module SingleTableGlobalize3
                                        translations.select{|t| t.locale.to_s == locale.to_s }
                                      else
                                        translations.with_locale(locale)
-                                     end.inject({}) do |hash, t|
+                                     end.inject(HashWithIndifferentAccess.new) do |hash, t|
                                        hash.update(t.attribute_name => t)
                                      end
       end
 
       def translation_caches
-        @translation_caches ||= {}
+        @translation_caches ||= HashWithIndifferentAccess.new
       end
 
       def globalize_fallbacks(locale)
