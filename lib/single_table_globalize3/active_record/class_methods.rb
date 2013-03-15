@@ -13,6 +13,16 @@ module SingleTableGlobalize3
         end
       end
 
+      unless respond_to?(:attribute_names)
+        def attribute_names
+          @attribute_names ||= if !abstract_class? && table_exists?
+                                 column_names
+                               else
+                                 []
+                               end
+        end
+      end
+
       def supported_on_missing?(method_id)
         return super unless RUBY_VERSION < '1.9' || respond_to?(:translated_attribute_names)
         match = defined?(::ActiveRecord::DynamicFinderMatch) && (::ActiveRecord::DynamicFinderMatch.match(method_id) || ::ActiveRecord::DynamicScopeMatch.match(method_id))

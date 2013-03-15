@@ -77,7 +77,6 @@ module SingleTableGlobalize3
       end
 
       def rollback
-        # translation_caches[::SingleTableGlobalize3.locale] = previous_version.translation
         instance_variable_set('@globalize', previous_version.try(:globalize))
         self.version = versions.for_this_locale.last
       end

@@ -40,11 +40,10 @@ Version.class_eval do
 
   attr_accessible :locale
 
-  def self.locale_conditions_to_sql
-    "locale = '#{SingleTableGlobalize3.locale.to_s}'"
+  def self.for_this_locale
+    locale_str = SingleTableGlobalize3.locale.to_s
+    where(:locale => locale_str)
   end
-
-  scope :for_this_locale, lambda{ { :conditions => locale_conditions_to_sql } }
 
   def sibling_versions_with_locales
     sibling_versions_without_locales.for_this_locale
