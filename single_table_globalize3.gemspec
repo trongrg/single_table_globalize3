@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.authors      = ['Sven Fuchs', 'Joshua Harvey', 'Clemens Kofler', 'John-Paul Bader', 'Tomasz Stachewicz', 'Philip Arndt', 'Trong Tran']
   s.email        = 'trong.v.tran@gmail.com'
   s.homepage     = 'http://github.com/trongrg/single_table_globalize3'
-  s.summary      = 'Globalize3 successor which use only one table to store all the translations'
+  s.summary      = 'Globalize3 successor which uses only one table to store all the translations'
   s.description  = "#{s.summary}."
 
   s.files        = Dir['{lib/**/*,[A-Z]*}']
