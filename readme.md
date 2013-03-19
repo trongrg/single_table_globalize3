@@ -3,6 +3,10 @@
 Single Table Globalize3 is the successor of Globalize3. Instead of creating
 tables for every model, it just creates one single table to store all translations
 
+# Motivations
+
+Globalize3 is a great way to internationalize rails applications. However, I feel uncomfortable to add too many tables to my database. Maybe it's not that many, but when ever I want to translate more models/attributes, I will have to add a migration to either create new tables or add new columns. Why not just have a single table to store all the translations instead?
+
 # Credits
 * Sven Fuchs, Joshua Harvey, Clemens Kofler, John-Paul Bader, Tomasz Stachewicz, Philip Arndt and other contributors for the great globalize3 project
 * My girlfriend for inspiring me to complete this
