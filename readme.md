@@ -1,4 +1,4 @@
-# Single Table Globalize3 [![Build Status](https://travis-ci.org/trongrg/single_table_globalize3.png?branch=master)](https://travis-ci.org/trongrg/single_table_globalize3)
+# Single Table Globalize3 [![Build Status](https://travis-ci.org/trongrg/single_table_globalize3.png?branch=master)](https://travis-ci.org/trongrg/single_table_globalize3) [![Code Climate](https://codeclimate.com/github/trongrg/single_table_globalize3.png)](https://codeclimate.com/github/trongrg/single_table_globalize3)
 
 Single Table Globalize3 is the successor of Globalize3. Instead of creating
 tables for every model, it just creates one single table to store all translations
