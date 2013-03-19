@@ -28,14 +28,14 @@ Gem::Specification.new do |s|
     s.add_dependency 'activerecord', '>= 3.0.0'
     s.add_dependency 'activemodel', '>= 3.0.0'
   end
-  s.add_dependency 'paper_trail',  '~> 2'
+  s.add_dependency 'paper_trail',  '~> 2.7.1'
 
-  s.add_development_dependency 'database_cleaner', '~> 0.6.0'
-  s.add_development_dependency 'mocha'
-  s.add_development_dependency 'pathname_local'
-  s.add_development_dependency 'test_declarative'
+  s.add_development_dependency 'database_cleaner', '~> 0.9.1'
+  s.add_development_dependency 'mocha', '~> 0.13.3'
+  s.add_development_dependency 'pathname_local', '~> 0.0.2'
+  s.add_development_dependency 'test_declarative', '~> 0.0.5'
 
-  s.add_development_dependency 'sqlite3'
+  s.add_development_dependency 'sqlite3', '~> 1.3.7'
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'rdoc'
+  s.add_development_dependency 'rdoc', '~> 3.12.2'
 end
