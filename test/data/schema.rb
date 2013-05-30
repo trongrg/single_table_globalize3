@@ -38,8 +38,17 @@ ActiveRecord::Schema.define do
     t.string :untranslated
   end
 
+  create_table :two_attributes_migrateds, :force => true do |t|
+    t.string :name
+    t.string :untranslated
+  end
+
   create_table :untranslateds, :force => true do |t|
     t.string :name
+  end
+  create_table :two_attributes_untranslateds, :force => true do |t|
+    t.string :name
+    t.string :body
   end
 
   create_table :validatees, :force => true do |t|
@@ -104,5 +113,24 @@ ActiveRecord::Schema.define do
   end
 
   create_table :bazs, :force => true do |t|
+  end
+
+  create_table :model_with_custom_table_names, :force => true do |t|
+    t.string  :name
+  end
+
+  create_table :mctn_translations, :force => true do |t|
+    t.references :model_with_custom_table_name
+    t.string :locale
+    t.string :name
+  end
+
+  create_table :locales, :force => true do |t|
+  end
+
+  create_table :locale_translations, :force => true do |t|
+    t.integer :locale_id
+    t.string  :locale
+    t.string  :name
   end
 end
